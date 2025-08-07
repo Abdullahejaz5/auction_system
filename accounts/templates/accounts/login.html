@@ -42,6 +42,11 @@
 
                         <form action="/login" method='post' id="loginForm" novalidate>
                             {% csrf_token %}
+                            <ul>
+                            {% for message in messages %}
+                            <li class="{{message.tags}}">{{message}}</li>
+                            {% endfor %}
+                            </ul>
                             <div class="mb-3">
                                 <label for="loginEmail" class="form-label fw-semibold">
                                     <i class="bi bi-person-circle"></i> Email or Username

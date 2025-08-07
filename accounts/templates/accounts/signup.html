@@ -42,6 +42,11 @@
 
                         <form action='/signup' method='post' id="signupForm" novalidate>
                             {% csrf_token %}
+                            <ul>
+                            {% for message in messages %}
+                            <li class="{{message.tags}}">{{message}}</li>
+                            {% endfor %}
+                            </ul>
                             <div class="mb-3">
                                 <label for="fullName" class="form-label fw-semibold">
                                     <i class="bi bi-person"></i> Full Name
@@ -463,6 +468,7 @@
     </script>
     
     <style>
+        
         .auth-container {
             background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
             position: relative;
