@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import date,timedelta
+from django.utils import timezone
 
 def ten_days_later():
     return date.today() + timedelta(days=20)
@@ -23,14 +24,28 @@ class Products (models.Model):
     product_desc=models.CharField(max_length=1000,default='')
     product_pub_date=models.DateField(default=date.today)
     product_end_date=models.DateField(default=ten_days_later)
-    product_image=models.ImageField(upload_to='shop/images',default='')
+    product_image=models.ImageField(upload_to='auctions/images',default='')
     product_start_price= models.IntegerField(default=0)
+    product_current_price= models.IntegerField(default=0)
     product_end_price=models.IntegerField(default=0)
     product_mid_price=models.IntegerField(default=0)
     product_owner=models.IntegerField(default=0)
-    product_winner=models.IntegerField(default=None)
+    product_winner=models.CharField(default=-1)
     product_bidders=models.CharField(max_length=200,default='')
     product_status=models.CharField(max_length=50,default='pending')
+    product_bids_count=models.IntegerField(default=0)
     
     def __str__(self):
         return self.product_name
+
+
+class Messages (models.Model):
+    message_id=models.AutoField(primary_key=True)
+    seller_id=models.IntegerField(default=0)
+    time=models.DateTimeField(default=timezone.now)
+    message_head=models.CharField(max_length=100,default='')
+    message=models.CharField(max_length=100,default='')
+    type=models.CharField(max_length=50,default='')
+
+    def __str__(self):
+        return self.message
