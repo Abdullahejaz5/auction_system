@@ -1,0 +1,114 @@
+{% load static %}
+<style>
+.product-card {
+  max-width: 600px;
+  margin: auto;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.countdown-box {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  gap: 15px;
+}
+
+.countdown-box div {
+  text-align: center;
+  font-size: 14px;
+  color: #dc3545;
+}
+
+.countdown-box span {
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+  <!-- Bootstrap (optional if you're already using it) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container my-5">
+  <div class="card product-card shadow-lg rounded-4">
+    
+    <!-- Product Image + Countdown -->
+    <div class="position-relative">
+      <img src="{{product.product_image.url}}" class="card-img-top rounded-top-4" alt="Product Image">
+      
+      <div class="countdown-box d-flex justify-content-center align-items-center">
+        <div><span id="days">2</span><br>Days</div>
+        <div><span id="hours">15</span><br>Hours</div>
+        <div><span id="minutes">30</span><br>Min</div>
+        <div><span id="seconds">45</span><br>Sec</div>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="card-body">
+      <h3 class="card-title">{{product.product_name}}</h3>
+
+      <p class="text-muted">{{product.product_desc}}</p>
+
+      <div class="d-flex justify-content-around my-3 p-3 bg-light rounded">
+        <div>
+          <p class="mb-1 fw-bold text-success">${{product.product_current_price}}</p>
+          <small>Current Bid</small>
+        </div>
+        <div>
+          <p class="mb-1 fw-bold">{{product.product_bids_count}}</p>
+          <small>Total Bids</small>
+        </div>
+      </div>
+
+      <!-- Bid Form -->
+      <form method="post" action="#">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+          <span class="input-group-text">$</span>
+          <input type="number" class="form-control" name="bid_amount" placeholder="Enter your bid">
+          <button class="btn btn-success" type="submit">Submit Bid</button>
+        </div>
+      </form>
+
+      <a href="/live_to_show/{{id}}/{{product.product_category}}" class="btn btn-outline-primary w-100 mt-2">Back to Listings</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+{% if less %}
+<script>
+    alert('Bid must be higher than the current bit')
+   
+</script>
+{% endif %}
+
+{% if won %}
+<script>
+    alert('Congratulations! you won the bit. Our team will reach you soon.')
+    document.location='/live_to_show/{{id}}/{{product.product_category}}'
+</script>
+{% endif %}
+
+{% if save %}
+<script>
+    alert('Your bid has been saved')
+
+</script>
+{% endif %}

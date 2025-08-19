@@ -40,13 +40,23 @@
                             <p class="text-muted">Sign in to your BidMaster account</p>
                         </div>
 
+                        <!-- Toast Container -->
+                        <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 11000;">
+                            {% for message in messages %}
+                            <div class="toast show align-items-center text-white {% if message.tags == 'error' %}bg-danger{% elif message.tags == 'success' %}bg-success{% else %}bg-primary{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                        <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle{% elif message.tags == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %} me-2"></i>
+                                        {{ message }}
+                                    </div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
                         <form action="/login" method='post' id="loginForm" novalidate>
                             {% csrf_token %}
-                            <ul>
-                            {% for message in messages %}
-                            <li class="{{message.tags}}">{{message}}</li>
-                            {% endfor %}
-                            </ul>
                             <div class="mb-3">
                                 <label for="loginEmail" class="form-label fw-semibold">
                                     <i class="bi bi-person-circle"></i> Email or Username
@@ -133,6 +143,53 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Toast Auto-Hide Script -->
+    <script>
+        // Auto-hide toasts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(function(toast) {
+                setTimeout(function() {
+                    const bsToast = new bootstrap.Toast(toast);
+                    bsToast.hide();
+                }, 5000);
+            });
+        });
+        
+        // Function to show custom toast notifications
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast_' + Date.now();
+            const iconClass = type === 'error' ? 'bi-exclamation-triangle' : type === 'success' ? 'bi-check-circle' : 'bi-info-circle';
+            const bgClass = type === 'error' ? 'bg-danger' : type === 'success' ? 'bg-success' : 'bg-primary';
+            
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="bi ${iconClass} me-2"></i>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+            const newToast = document.getElementById(toastId);
+            const bsToast = new bootstrap.Toast(newToast);
+            bsToast.show();
+            
+            // Auto-hide after 5 seconds
+            setTimeout(function() {
+                bsToast.hide();
+                setTimeout(function() {
+                    newToast.remove();
+                }, 500);
+            }, 5000);
+        }
+    </script>
 
     <script>
         /*document.getElementById('loginForm').addEventListener('submit', function(e) {

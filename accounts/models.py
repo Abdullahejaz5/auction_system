@@ -31,6 +31,7 @@ class Products (models.Model):
     product_mid_price=models.IntegerField(default=0)
     product_owner=models.IntegerField(default=0)
     product_winner=models.CharField(default=-1)
+    product_winner_id=models.IntegerField(default=-1)
     product_bidders=models.CharField(max_length=200,default='')
     product_status=models.CharField(max_length=50,default='pending')
     product_bids_count=models.IntegerField(default=0)

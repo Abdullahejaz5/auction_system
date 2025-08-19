@@ -30,6 +30,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'auctionsystem786@gmail.com'       # aapka email
+EMAIL_HOST_PASSWORD = 'sjhauitwisbneimg'      # Gmail App Password (normal password nahi chalega)
 
 # Application definition
 
@@ -109,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Karachi'
 
 USE_I18N = True
 

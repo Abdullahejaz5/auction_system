@@ -14,4 +14,15 @@ urlpatterns = [
     path('sold/<int:member_id>', views.sold,name='sold'),
     path('withdraw/<int:member_id>/<int:product_id>', views.withdraw,name='withdraw'),
     path('delete/<int:member_id>/<int:product_id>/<str:token>', views.delete,name='delete'),
+    path('live_to_show/<int:member_id>/<str:category>', views.live_to_show,name='live_to_show'),
+    path('winnings/<int:member_id>', views.winnings,name='winnings'),
+    path('messages_to_show/<int:member_id>', views.messages_to_show,name='messages_to_show'),
+    path('categories/<int:member_id>', views.categories,name='categories'),
+    path('show_details/<int:member_id>/<int:product_id>', views.show_details,name='show_details'),
+
+
+    
+
+
+
 ]
