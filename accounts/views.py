@@ -71,7 +71,7 @@ def decision(request,member_id):
         live=len(Products.objects.filter(product_owner=member_id,product_status='live'))
         sold=len(Products.objects.filter(product_owner=member_id,product_status='sold'))
         inactive=len(Products.objects.filter(product_owner=member_id,product_status='inactive'))
-        messages=Messages.objects.filter(seller_id=member_id).order_by('time')
+        messages=Messages.objects.filter(seller_id=member_id).order_by('-time')
         if len(messages)>=5:
             messages=messages[:5]
 
@@ -164,12 +164,16 @@ def show_details(request,member_id,product_id):
             product.product_status='sold'
             product.product_end_date=timezone.now().date()
             print(timezone.now().date())
-            send_mail(subject='Auction Update',message='Congrats! You won the bid 🎉',from_email='auctionsystem786@gmail.com',   recipient_list=['abdullahejaz57201@gmail.com'],fail_silently=False,)
+            owner=Members.objects.get(member_id=product.product_owner).contact
+            winner=Members.objects.get(member_id=member_id).email
+            send_mail(subject='Auction Update',message=f'Congrats! You won the bid of product named {product.product_name} for ${int(bid)}. Kindly contact on {owner} 🎉',from_email='auctionsystem786@gmail.com',   recipient_list=[winner],fail_silently=False,)
 
             product.save()
             message=Messages(seller_id=member_id,time=timezone.now(),message_head='YOU WON THE BIT',message=f'Congratulations you have won the product,named {product.product_name}',type='winnings')
             message.save()
-
+            customer=Members.objects.get(member_id=member_id).name
+            msg=Messages(seller_id=product.product_owner,message_head='Sold Out',message=f'Your product named {product.product_name} has been sold out to {customer} for ${int(bid)}',type='sold')
+            msg.save()
             return render(request,'accounts/product_details.html',{'id':member_id,'product':product,'won':won})
 
         elif int(bid)<int(product.product_end_price):
@@ -178,6 +182,9 @@ def show_details(request,member_id,product_id):
             product.product_current_price=bid
             product.product_bids_count=product.product_bids_count+1
             product.save()
+            customer=Members.objects.get(member_id=member_id).name
+            msg=Messages(seller_id=product.product_owner,message_head='New bid',message=f'New bid of ${int(bid)} on your product named {product.product_name} is received from {customer}',type='bid')
+            msg.save()
             return render(request,'accounts/product_details.html',{'id':member_id,'product':product,'save':save})
     
     return render(request,'accounts/product_details.html',{'id':member_id,'product':product})
